@@ -7,17 +7,17 @@ struct PopupModifier<Popup: View>: ViewModifier {
   var presentationAnimationTrigger: Bool { isUserInstructToPresent ? isViewAppeared : false }
 
   let animation: Animation
-  let duration: UInt64
+  let duration: Duration
   let popup: () -> Popup
 
   init(
     isPresented: Binding<Bool>,
-    duration nanoseconds: UInt64,
+    duration: Duration,
     animation: Animation,
     @ViewBuilder popup: @escaping () -> Popup
   ) {
     self._isUserInstructToPresent = isPresented
-    self.duration = nanoseconds
+    self.duration = duration
     self.animation = animation
     self.popup = popup
   }

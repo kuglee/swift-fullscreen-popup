@@ -1,8 +1,6 @@
 import SwiftUI
 
 extension View {
-  /// Presents a popup with customizable content. Available from macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0.
-  ///
   /// - Note: The `duration` parameter must be greater than the `duration` of the `animation`.
   ///
   /// - Parameters:
@@ -12,7 +10,6 @@ extension View {
   ///   - animation: The animation to use when presenting the popup. Default is a spring animation.
   ///   - popup: A closure returning the popup content.
   /// - Returns: A view with the popup applied.
-  @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *) @_disfavoredOverload
   public func popup<Popup: View>(
     isPresented: Binding<Bool>,
     duration: Duration = .seconds(0.35),
@@ -22,7 +19,7 @@ extension View {
     modifier(
       PopupModifier(
         isPresented: isPresented,
-        duration: duration.nanoseconds,
+        duration: duration,
         animation: animation,
         popup: content
       )
@@ -31,8 +28,6 @@ extension View {
 }
 
 extension View {
-  /// Presents a popup with customizable content based on an identifiable item. Available from macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0.
-  ///
   /// - Note: The `duration` parameter must be greater than the `duration` of the `animation`.
   ///
   /// - Parameters:
@@ -42,7 +37,6 @@ extension View {
   ///   - animation: The animation to use when presenting the popup. Default is a spring animation.
   ///   - content: A closure returning the popup content. The closure takes the current item as a parameter.
   /// - Returns: A view with the popup applied.
-  @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *) @_disfavoredOverload
   public func popup<Popup: View, Item: Identifiable & Equatable>(
     item: Binding<Item?>,
     duration: Duration = .seconds(0.35),
@@ -50,12 +44,7 @@ extension View {
     @ViewBuilder content: @escaping (_ item: Item) -> Popup
   ) -> some View {
     modifier(
-      PopupItemModifier(
-        item: item,
-        duration: duration.nanoseconds,
-        animation: animation,
-        popup: content
-      )
+      PopupItemModifier(item: item, duration: duration, animation: animation, popup: content)
     )
   }
 }

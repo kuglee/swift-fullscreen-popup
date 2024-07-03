@@ -3,7 +3,7 @@ import SwiftUI
 extension View {
   func animatableFullScreenCover(
     isPresented: Binding<Bool>,
-    duration nanoseconds: UInt64,
+    duration: Duration,
     content: @escaping () -> some View,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
@@ -11,7 +11,7 @@ extension View {
     modifier(
       AnimatableFullScreenViewModifier(
         isPresented: isPresented,
-        duration: nanoseconds,
+        duration: duration,
         fullScreenContent: content,
         onAppear: onAppear,
         onDisappear: onDisappear
@@ -21,7 +21,7 @@ extension View {
 
   func animatableFullScreenCover<Item: Identifiable & Equatable>(
     item: Binding<Item?>,
-    duration nanoseconds: UInt64,
+    duration: Duration,
     content: @escaping (Item) -> some View,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
@@ -29,7 +29,7 @@ extension View {
     modifier(
       AnimatableFullScreenItemViewModifier(
         item: item,
-        duration: nanoseconds,
+        duration: duration,
         fullScreenContent: content,
         onAppear: onAppear,
         onDisappear: onDisappear
@@ -45,20 +45,20 @@ private struct AnimatableFullScreenItemViewModifier<
   @Binding var isUserInstructToPresentItem: Item?
   @State var isActualPresented: Item?
 
-  let nanoseconds: UInt64
+  let duration: Duration
   let fullScreenContent: (Item) -> (FullScreenContent)
   let onAppear: () -> Void
   let onDisappear: () -> Void
 
   init(
     item: Binding<Item?>,
-    duration nanoseconds: UInt64,
+    duration: Duration,
     fullScreenContent: @escaping (Item) -> FullScreenContent,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
   ) {
     self._isUserInstructToPresentItem = item
-    self.nanoseconds = nanoseconds
+    self.duration = duration
     self.fullScreenContent = fullScreenContent
     self.onAppear = onAppear
     self.onDisappear = onDisappear
@@ -72,7 +72,7 @@ private struct AnimatableFullScreenItemViewModifier<
         isActualPresented = isUserInstructToPresent
       } else {
         Task {
-          try await Task.sleep(nanoseconds: nanoseconds)
+          try await Task.sleep(for: duration)
           isActualPresented = isUserInstructToPresent
         }
       }
@@ -99,20 +99,20 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
   @Binding var isUserInstructToPresent: Bool
   @State var isActualPresented: Bool
 
-  let nanoseconds: UInt64
+  let duration: Duration
   let fullScreenContent: () -> (FullScreenContent)
   let onAppear: () -> Void
   let onDisappear: () -> Void
 
   init(
     isPresented: Binding<Bool>,
-    duration nanoseconds: UInt64,
+    duration: Duration,
     fullScreenContent: @escaping () -> FullScreenContent,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
   ) {
     self._isUserInstructToPresent = isPresented
-    self.nanoseconds = nanoseconds
+    self.duration = duration
     self.fullScreenContent = fullScreenContent
     self.onAppear = onAppear
     self.onDisappear = onDisappear
@@ -126,7 +126,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
         isActualPresented = isUserInstructToPresent
       } else {
         Task {
-          try await Task.sleep(nanoseconds: nanoseconds)
+          try await Task.sleep(for: duration)
           isActualPresented = isUserInstructToPresent
         }
       }
