@@ -8,13 +8,13 @@ struct PopupModifier<Popup: View>: ViewModifier {
 
   let animation: Animation
   let duration: UInt64
-  let popup: (Bool) -> Popup
+  let popup: () -> Popup
 
   init(
     isPresented: Binding<Bool>,
     duration nanoseconds: UInt64,
     animation: Animation,
-    @ViewBuilder popup: @escaping (_ isPresented: Bool) -> Popup
+    @ViewBuilder popup: @escaping () -> Popup
   ) {
     self._isUserInstructToPresent = isPresented
     self.duration = nanoseconds
@@ -24,7 +24,7 @@ struct PopupModifier<Popup: View>: ViewModifier {
 
   func body(content: Content) -> some View {
     content.animatableFullScreenCover(isPresented: $isUserInstructToPresent, duration: duration) {
-      popup(presentationAnimationTrigger).scaleEffect(presentationAnimationTrigger ? 1 : 0)
+      popup().scaleEffect(presentationAnimationTrigger ? 1 : 0)
         .animation(animation, value: presentationAnimationTrigger)
     } onAppear: {
       isViewAppeared = isUserInstructToPresent
