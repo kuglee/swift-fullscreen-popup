@@ -1,3 +1,4 @@
+import OnTapOutsideGesture
 import SwiftUI
 
 struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModifier {
@@ -9,12 +10,14 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
 
   let animation: Animation
   let duration: Duration
+  let dismissTapBehavior: DismissTapBehavior
   let popup: (Item) -> Popup
 
   init(
     item: Binding<Item?>,
     duration: Duration,
     animation: Animation,
+    dismissTapBehavior: DismissTapBehavior,
     @ViewBuilder popup: @escaping (_ item: Item) -> Popup
   ) {
 
@@ -22,12 +25,18 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
     self._item = item
     self.duration = duration
     self.animation = animation
+    self.dismissTapBehavior = dismissTapBehavior
     self.popup = popup
   }
 
   func body(content: Content) -> some View {
-    content.animatableFullScreenCover(item: $isUserInstructToPresent, duration: duration) { item in
-      popup(item).scaleEffect(presentationAnimationTrigger ? 1 : 0)
+    content.animatableFullScreenCover(
+      item: $isUserInstructToPresent,
+      duration: duration,
+      dismissTapBehavior: dismissTapBehavior
+    ) { item in
+      popup(item).onTapOutsideGesture { isUserInstructToPresent = nil }
+        .scaleEffect(presentationAnimationTrigger ? 1 : 0)
         .animation(animation, value: presentationAnimationTrigger)
     } onAppear: {
       isViewAppeared = true

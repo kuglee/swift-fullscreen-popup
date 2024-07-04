@@ -18,11 +18,17 @@ let package = Package(
             targets: ["FullscreenPopup"]
         ),
     ],
+    dependencies: [
+      .package(url: "https://github.com/kuglee/OnTapOutsideGesture", branch: "main"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "FullscreenPopup"
+            name: "FullscreenPopup",
+            dependencies: [
+              .product(name: "OnTapOutsideGesture", package: "OnTapOutsideGesture"),
+            ]
         ),
         .testTarget(
             name: "FullscreenPopupTests",

@@ -4,6 +4,7 @@ extension View {
   func animatableFullScreenCover(
     isPresented: Binding<Bool>,
     duration: Duration,
+    dismissTapBehavior: DismissTapBehavior,
     content: @escaping () -> some View,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
@@ -12,6 +13,7 @@ extension View {
       AnimatableFullScreenViewModifier(
         isPresented: isPresented,
         duration: duration,
+        dismissTapBehavior: dismissTapBehavior,
         fullScreenContent: content,
         onAppear: onAppear,
         onDisappear: onDisappear
@@ -22,6 +24,7 @@ extension View {
   func animatableFullScreenCover<Item: Identifiable & Equatable>(
     item: Binding<Item?>,
     duration: Duration,
+    dismissTapBehavior: DismissTapBehavior,
     content: @escaping (Item) -> some View,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
@@ -30,6 +33,7 @@ extension View {
       AnimatableFullScreenItemViewModifier(
         item: item,
         duration: duration,
+        dismissTapBehavior: dismissTapBehavior,
         fullScreenContent: content,
         onAppear: onAppear,
         onDisappear: onDisappear
@@ -46,6 +50,7 @@ private struct AnimatableFullScreenItemViewModifier<
   @State var isActualPresented: Item?
 
   let duration: Duration
+  let dismissTapBehavior: DismissTapBehavior
   let fullScreenContent: (Item) -> (FullScreenContent)
   let onAppear: () -> Void
   let onDisappear: () -> Void
@@ -53,12 +58,14 @@ private struct AnimatableFullScreenItemViewModifier<
   init(
     item: Binding<Item?>,
     duration: Duration,
+    dismissTapBehavior: DismissTapBehavior,
     fullScreenContent: @escaping (Item) -> FullScreenContent,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
   ) {
     self._isUserInstructToPresentItem = item
     self.duration = duration
+    self.dismissTapBehavior = dismissTapBehavior
     self.fullScreenContent = fullScreenContent
     self.onAppear = onAppear
     self.onDisappear = onDisappear
@@ -78,7 +85,8 @@ private struct AnimatableFullScreenItemViewModifier<
       }
     }
     .fullScreenCover(item: $isActualPresented) { item in
-      fullScreenContent(item).background(BackgroundTransparentView())
+      fullScreenContent(item)
+        .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
         .onAppear {
           if !UIView.areAnimationsEnabled {
             UIView.setAnimationsEnabled(true)
@@ -100,6 +108,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
   @State var isActualPresented: Bool
 
   let duration: Duration
+  let dismissTapBehavior: DismissTapBehavior
   let fullScreenContent: () -> (FullScreenContent)
   let onAppear: () -> Void
   let onDisappear: () -> Void
@@ -107,12 +116,14 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
   init(
     isPresented: Binding<Bool>,
     duration: Duration,
+    dismissTapBehavior: DismissTapBehavior,
     fullScreenContent: @escaping () -> FullScreenContent,
     onAppear: @escaping () -> Void,
     onDisappear: @escaping () -> Void
   ) {
     self._isUserInstructToPresent = isPresented
     self.duration = duration
+    self.dismissTapBehavior = dismissTapBehavior
     self.fullScreenContent = fullScreenContent
     self.onAppear = onAppear
     self.onDisappear = onDisappear
@@ -132,7 +143,8 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
       }
     }
     .fullScreenCover(isPresented: $isActualPresented) {
-      fullScreenContent().background(BackgroundTransparentView())
+      fullScreenContent()
+        .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
         .onAppear {
           if !UIView.areAnimationsEnabled {
             UIView.setAnimationsEnabled(true)
@@ -150,14 +162,38 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
 }
 
 private struct BackgroundTransparentView: UIViewRepresentable {
-  func makeUIView(context _: Context) -> UIView { TransparentView() }
+  let dismissTapBehavior: DismissTapBehavior
+
+  func makeUIView(context _: Context) -> UIView {
+    TransparentView(dismissTapBehavior: dismissTapBehavior)
+  }
 
   func updateUIView(_: UIView, context _: Context) {}
 
   private class TransparentView: UIView {
-    override func layoutSubviews() {
-      super.layoutSubviews()
+    let dismissTapBehavior: DismissTapBehavior
+
+    init(dismissTapBehavior: DismissTapBehavior) {
+      self.dismissTapBehavior = dismissTapBehavior
+      super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func didMoveToWindow() {
+      super.didMoveToWindow()
       superview?.superview?.backgroundColor = .clear
+
+      if dismissTapBehavior == .simultaneous {
+        if let contentView = superview, let uiTransitionView = contentView.superview?.superview {
+          uiTransitionView.frame = contentView.frame
+        }
+      }
     }
   }
+}
+
+public enum DismissTapBehavior {
+  case exclusive
+  case simultaneous
 }
