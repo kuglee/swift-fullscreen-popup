@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "swift-fullscreen-popup",
     platforms: [
-        .iOS(.v16),
+        .iOS(.v17),
         .macOS(.v13),
         .tvOS(.v16),
         .watchOS(.v9),
