@@ -6,7 +6,6 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
   @Binding var item: Item?
   @State var isViewAppeared: Bool = false
   @State var contentFrame: CGRect = .zero
-  @State var popupSize: CGSize = .zero
 
   var presentationAnimationTrigger: Bool { isUserInstructToPresent != nil ? isViewAppeared : false }
 
@@ -54,25 +53,21 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
       duration: duration,
       dismissTapBehavior: dismissTapBehavior
     ) { item in
-      popup(item)
-        .onGeometryChange(for: CGSize.self) {
-          $0.size
-        } action: {
-          popupSize = $0
-        }
-        .onTapOutsideGesture { isUserInstructToPresent = nil }
+      popup(item).onTapOutsideGesture { isUserInstructToPresent = nil }
         .scaleEffect(presentationAnimationTrigger ? 1 : 0)
-        .position(
-          calcPopupPosition(
-            contentFrame: self.contentFrame,
-            popupSize: self.popupSize,
-            attachmentAnchor: self.attachmentAnchor,
-            alignment: self.alignment,
-            edge: self.attachmentEdge,
-            offset: self.edgeOffset
+        .visualEffect { [contentFrame, attachmentAnchor] content, geometry in
+          content.offset(
+            calcPopupOffset(
+              contentFrame: contentFrame,
+              popupFrame: geometry.frame(in: .global),
+              attachmentAnchor: attachmentAnchor,
+              alignment: self.alignment,
+              edge: self.attachmentEdge,
+              offset: self.edgeOffset
+            )
           )
-        )
-        .ignoresSafeArea().animation(animation, value: presentationAnimationTrigger)
+        }
+        .animation(animation, value: presentationAnimationTrigger)
     } onAppear: {
       isViewAppeared = true
     } onDisappear: {

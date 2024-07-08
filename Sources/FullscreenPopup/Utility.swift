@@ -1,13 +1,13 @@
 import SwiftUI
 
-func calcPopupPosition(
+func calcPopupOffset(
   contentFrame: CGRect,
-  popupSize: CGSize,
+  popupFrame: CGRect,
   attachmentAnchor: PopupAttachmentAnchor,
   alignment: Alignment?,
   edge: Edge,
   offset: CGFloat
-) -> CGPoint {
+) -> CGSize {
   func getPopupUnitPoint(alignment: Alignment?, edge: Edge) -> PopupUnitPoint {
     if let alignment { alignment.popupUnitPoint } else { edge.popupUnitPoint }
   }
@@ -30,11 +30,13 @@ func calcPopupPosition(
     case let .point(unitPoint): CGPoint.zero + unitPoint * contentFrame.size
     }
   let offset = calcPopupOffset(
-    popupSize: popupSize,
+    popupSize: popupFrame.size,
     alignment: alignment,
     edge: edge,
     offset: offset
   )
 
-  return contentFrame.origin + relativePosition + offset
+  return
+    (contentFrame.origin + relativePosition + offset - popupFrame.origin + popupFrame.size * -0.5)
+    .cgSize
 }

@@ -3,8 +3,14 @@ import SwiftUI
 extension CGPoint {
   static func + (_ lhs: Self, _ rhs: Self) -> Self { Self(x: lhs.x + rhs.x, y: lhs.y + rhs.y) }
 
+  static func - (_ lhs: Self, _ rhs: Self) -> Self { Self(x: lhs.x - rhs.x, y: lhs.y - rhs.y) }
+
   static func + (_ lhs: Self, _ rhs: CGSize) -> Self {
     Self(x: lhs.x + rhs.width, y: lhs.y + rhs.height)
+  }
+
+  var cgSize: CGSize {
+    .init(width: self.x, height: self.y)
   }
 }
 
