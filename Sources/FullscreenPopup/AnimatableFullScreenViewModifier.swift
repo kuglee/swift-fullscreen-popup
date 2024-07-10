@@ -72,7 +72,7 @@ private struct AnimatableFullScreenItemViewModifier<
       if isUserInstructToPresentItem != nil {
         isActualPresented = isUserInstructToPresentItem
       } else {
-        withAnimation($isUserInstructToPresentItem.transaction.animation) {
+        withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
         } completion: {
           isActualPresented = isUserInstructToPresentItem
@@ -85,7 +85,7 @@ private struct AnimatableFullScreenItemViewModifier<
         .onAppear {
           if !UIView.areAnimationsEnabled {
             UIView.setAnimationsEnabled(true)
-            onAppear()
+            withAnimation(animation) { onAppear() }
           }
         }
         .onDisappear {
@@ -97,6 +97,8 @@ private struct AnimatableFullScreenItemViewModifier<
     }
     .background { dismissAnimationCompletionTriggerView }
   }
+
+  var animation: Animation? { $isUserInstructToPresentItem.transaction.animation }
 
   var dismissAnimationCompletionTriggerView: some View {
     EmptyView().id(dismissAnimationCompletionTrigger)
@@ -134,7 +136,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
       if isUserInstructToPresent {
         isActualPresented = isUserInstructToPresent
       } else {
-        withAnimation($isUserInstructToPresent.transaction.animation) {
+        withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
         } completion: {
           isActualPresented = isUserInstructToPresent
@@ -147,7 +149,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
         .onAppear {
           if !UIView.areAnimationsEnabled {
             UIView.setAnimationsEnabled(true)
-            onAppear()
+            withAnimation(animation) { onAppear() }
           }
         }
         .onDisappear {
@@ -159,6 +161,8 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
     }
     .background { dismissAnimationCompletionTriggerView }
   }
+
+  var animation: Animation? { $isUserInstructToPresent.transaction.animation }
 
   var dismissAnimationCompletionTriggerView: some View {
     EmptyView().id(dismissAnimationCompletionTrigger)

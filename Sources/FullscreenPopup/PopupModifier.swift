@@ -57,10 +57,6 @@ struct PopupModifier<Popup: View>: ViewModifier {
             )
           )
         }
-        .animation(
-          $isUserInstructToPresent.transaction.animation,
-          value: presentationAnimationTrigger
-        )
     } onAppear: {
       isViewAppeared = isUserInstructToPresent
     } onDisappear: {

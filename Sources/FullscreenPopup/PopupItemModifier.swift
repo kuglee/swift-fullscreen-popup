@@ -59,10 +59,6 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
             )
           )
         }
-        .animation(
-          $isUserInstructToPresent.transaction.animation,
-          value: presentationAnimationTrigger
-        )
     } onAppear: {
       isViewAppeared = true
     } onDisappear: {
