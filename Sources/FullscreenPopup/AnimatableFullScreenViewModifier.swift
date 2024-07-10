@@ -47,7 +47,7 @@ private struct AnimatableFullScreenItemViewModifier<
   @State var dismissAnimationCompletionTrigger: UUID = .init()
 
   var animation: Animation? { $isUserInstructToPresentItem.transaction.animation }
-  
+
   func onAnimationCompletion() { isActualPresented = isUserInstructToPresentItem }
 
   let dismissTapBehavior: DismissTapBehavior
@@ -72,8 +72,6 @@ private struct AnimatableFullScreenItemViewModifier<
 
   func body(content: Content) -> some View {
     content.onChange(of: isUserInstructToPresentItem) {
-      UIView.setAnimationsEnabled(false)
-
       if isUserInstructToPresentItem == nil, let animation {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
@@ -87,20 +85,10 @@ private struct AnimatableFullScreenItemViewModifier<
     .fullScreenCover(item: $isActualPresented) { item in
       fullScreenContent(item)
         .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
-        .onAppear {
-          if !UIView.areAnimationsEnabled {
-            UIView.setAnimationsEnabled(true)
-            withAnimation(animation) { onAppear() }
-          }
-        }
-        .onDisappear {
-          if !UIView.areAnimationsEnabled {
-            UIView.setAnimationsEnabled(true)
-            onDisappear()
-          }
-        }
+        .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
+    .transaction { $0.disablesAnimations = isActualPresented != nil }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
@@ -139,8 +127,6 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
 
   func body(content: Content) -> some View {
     content.onChange(of: isUserInstructToPresent) {
-      UIView.setAnimationsEnabled(false)
-      
       if !isUserInstructToPresent, let animation {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
@@ -154,20 +140,10 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
     .fullScreenCover(isPresented: $isActualPresented) {
       fullScreenContent()
         .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
-        .onAppear {
-          if !UIView.areAnimationsEnabled {
-            UIView.setAnimationsEnabled(true)
-            withAnimation(animation) { onAppear() }
-          }
-        }
-        .onDisappear {
-          if !UIView.areAnimationsEnabled {
-            UIView.setAnimationsEnabled(true)
-            onDisappear()
-          }
-        }
+        .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
+    .transaction { $0.disablesAnimations = isActualPresented }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
