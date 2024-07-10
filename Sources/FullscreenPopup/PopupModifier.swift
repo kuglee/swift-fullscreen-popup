@@ -8,7 +8,6 @@ struct PopupModifier<Popup: View>: ViewModifier {
 
   var presentationAnimationTrigger: Bool { isUserInstructToPresent ? isViewAppeared : false }
 
-  let duration: Duration
   let dismissTapBehavior: DismissTapBehavior
   let attachmentAnchor: PopupAttachmentAnchor
   let attachmentEdge: Edge
@@ -18,7 +17,6 @@ struct PopupModifier<Popup: View>: ViewModifier {
 
   init(
     isPresented: Binding<Bool>,
-    duration: Duration,
     dismissTapBehavior: DismissTapBehavior,
     attachmentAnchor: PopupAttachmentAnchor,
     attachmentEdge: Edge,
@@ -27,7 +25,6 @@ struct PopupModifier<Popup: View>: ViewModifier {
     @ViewBuilder popup: @escaping () -> Popup
   ) {
     self._isUserInstructToPresent = isPresented
-    self.duration = duration
     self.dismissTapBehavior = dismissTapBehavior
     self.attachmentAnchor = attachmentAnchor
     self.attachmentEdge = attachmentEdge
@@ -44,7 +41,6 @@ struct PopupModifier<Popup: View>: ViewModifier {
     }
     .animatableFullScreenCover(
       isPresented: $isUserInstructToPresent,
-      duration: duration,
       dismissTapBehavior: dismissTapBehavior
     ) {
       popup().onTapOutsideGesture { isUserInstructToPresent = false }
