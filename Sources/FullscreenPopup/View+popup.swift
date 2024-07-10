@@ -25,7 +25,7 @@ extension View {
     edgeOffset: CGFloat = 0,
     alignment: Alignment? = nil,
     dismissTapBehavior: DismissTapBehavior = .exclusive,
-    @ViewBuilder content: @escaping () -> Popup
+    @ViewBuilder content: @escaping (Bool) -> Popup
   ) -> some View {
     modifier(
       PopupModifier(
@@ -66,7 +66,7 @@ extension View {
     edgeOffset: CGFloat = 0,
     alignment: Alignment? = nil,
     dismissTapBehavior: DismissTapBehavior = .exclusive,
-    @ViewBuilder content: @escaping (_ item: Item) -> Popup
+    @ViewBuilder content: @escaping (_ item: Item, _ isPresented: Bool) -> Popup
   ) -> some View {
     modifier(
       PopupItemModifier(

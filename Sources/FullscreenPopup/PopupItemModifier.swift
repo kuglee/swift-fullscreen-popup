@@ -14,7 +14,7 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
   let attachmentEdge: Edge
   let edgeOffset: CGFloat
   let alignment: Alignment?
-  let popup: (Item) -> Popup
+  let popup: (Item, Bool) -> Popup
 
   init(
     item: Binding<Item?>,
@@ -23,7 +23,7 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
     attachmentEdge: Edge,
     alignment: Alignment?,
     edgeOffset: CGFloat,
-    @ViewBuilder popup: @escaping (_ item: Item) -> Popup
+    @ViewBuilder popup: @escaping (_ item: Item, _ isPresented: Bool) -> Popup
   ) {
     self._isUserInstructToPresent = item
     self._item = item
@@ -45,8 +45,8 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
       item: $isUserInstructToPresent,
       dismissTapBehavior: dismissTapBehavior
     ) { item in
-      popup(item).onTapOutsideGesture { isUserInstructToPresent = nil }
-        .scaleEffect(presentationAnimationTrigger ? 1 : 0)
+      popup(item, presentationAnimationTrigger)
+        .onTapOutsideGesture { isUserInstructToPresent = nil }
         .visualEffect { [contentFrame, attachmentAnchor] content, geometry in
           content.offset(
             calcPopupOffset(

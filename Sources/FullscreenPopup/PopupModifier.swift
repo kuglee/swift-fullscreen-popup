@@ -13,7 +13,7 @@ struct PopupModifier<Popup: View>: ViewModifier {
   let attachmentEdge: Edge
   let edgeOffset: CGFloat
   let alignment: Alignment?
-  let popup: () -> Popup
+  let popup: (Bool) -> Popup
 
   init(
     isPresented: Binding<Bool>,
@@ -22,7 +22,7 @@ struct PopupModifier<Popup: View>: ViewModifier {
     attachmentEdge: Edge,
     alignment: Alignment?,
     edgeOffset: CGFloat,
-    @ViewBuilder popup: @escaping () -> Popup
+    @ViewBuilder popup: @escaping (_ isPresented: Bool) -> Popup
   ) {
     self._isUserInstructToPresent = isPresented
     self.dismissTapBehavior = dismissTapBehavior
@@ -43,8 +43,7 @@ struct PopupModifier<Popup: View>: ViewModifier {
       isPresented: $isUserInstructToPresent,
       dismissTapBehavior: dismissTapBehavior
     ) {
-      popup().onTapOutsideGesture { isUserInstructToPresent = false }
-        .scaleEffect(presentationAnimationTrigger ? 1 : 0)
+      popup(presentationAnimationTrigger).onTapOutsideGesture { isUserInstructToPresent = false }
         .visualEffect { [contentFrame, attachmentAnchor] content, geometry in
           content.offset(
             calcPopupOffset(

@@ -29,10 +29,10 @@ struct ContentView: View {
           }
         }
         .navigationTitle("Title").toolbarTitleDisplayMode(.inline)
-        .popup(isPresented: $isExample1Presented.animation(.default)) {
-          Example1Alert(isPresented: $isExample1Presented)
+        .popup(isPresented: $isExample1Presented.animation(.default)) { isPresented in
+          Example1Alert(isPresented: $isExample1Presented).scaleEffect(isPresented ? 1 : 0)
         }
-        .popup(item: $example3Item.animation(.default)) { item in
+        .popup(item: $example3Item.animation(.default)) { item, isPresented in
           VStack {
             Text(item.id.uuidString)
             Button {
@@ -42,6 +42,7 @@ struct ContentView: View {
             }
           }
           .padding().background(.white).clipShape(RoundedRectangle(cornerRadius: 10))
+          .scaleEffect(isPresented ? 1 : 0)
         }
         .modifier(
           SimplePopupModifier(isPresented: $isExample2Presented) {
