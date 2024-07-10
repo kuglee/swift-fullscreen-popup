@@ -17,6 +17,7 @@ extension View {
   ///   - popup: A closure returning the popup content.
   ///   - dismissTapBehavior: A Boolean value that indicates whether the dismiss gesture should
   ///   be processed simultaneously with gestures defined by the view.
+  ///   - content: A closure returning the popup content. The closure takes isPresented as a parameter.
   /// - Returns: A view with the popup applied.
   public func popup<Popup: View>(
     isPresented: Binding<Bool>,
@@ -57,7 +58,8 @@ extension View {
   ///   - edgeOffset: The distance of the poppver from the `attachmentEdge`.
   ///   - dismissTapBehavior: A Boolean value that indicates whether the dismiss gesture should
   ///   be processed simultaneously with gestures defined by the view.
-  ///   - content: A closure returning the popup content. The closure takes the current item as a parameter.
+  ///   - content: A closure returning the popup content. The closure takes the current item and
+  ///   isPresented as parameters.
   /// - Returns: A view with the popup applied.
   public func popup<Popup: View, Item: Identifiable & Equatable>(
     item: Binding<Item?>,
