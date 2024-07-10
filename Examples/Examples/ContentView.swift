@@ -29,10 +29,10 @@ struct ContentView: View {
           }
         }
         .navigationTitle("Title").toolbarTitleDisplayMode(.inline)
-        .popup(isPresented: $isExample1Presented) {
+        .popup(isPresented: $isExample1Presented.animation(.default)) {
           Example1Alert(isPresented: $isExample1Presented)
         }
-        .popup(item: $example3Item) { item in
+        .popup(item: $example3Item.animation(.default)) { item in
           VStack {
             Text(item.id.uuidString)
             Button {

@@ -7,7 +7,6 @@ extension View {
   ///   - isPresented: A binding to a Boolean value that determines whether to present the popup.
   ///   - duration: The duration of the popup animation. Default is 0.35 seconds.
   ///               Ensure this duration is longer than the animation's duration.
-  ///   - animation: The animation to use when presenting the popup. Default is a spring animation.
   ///   - attachmentAnchor: The positioning anchor that defines the
   ///     attachment point of the popup. The default is
   ///     ``PopupAttachmentAnchor/Source/bounds``.
@@ -24,7 +23,6 @@ extension View {
   public func popup<Popup: View>(
     isPresented: Binding<Bool>,
     duration: Duration = .seconds(0.35),
-    animation: Animation = .spring(duration: 0.3, bounce: 0.25, blendDuration: 0.1),
     attachmentAnchor: PopupAttachmentAnchor = .rect(.bounds),
     attachmentEdge: Edge = .top,
     edgeOffset: CGFloat = 0,
@@ -36,7 +34,6 @@ extension View {
       PopupModifier(
         isPresented: isPresented,
         duration: duration,
-        animation: animation,
         dismissTapBehavior: dismissTapBehavior,
         attachmentAnchor: attachmentAnchor,
         attachmentEdge: attachmentEdge,
@@ -55,7 +52,6 @@ extension View {
   ///   - item: A binding to an optional identifiable item that determines whether to present the popup. The popup is presented if the item is non-nil.
   ///   - duration: The duration of the popup animation. Default is 0.35 seconds.
   ///               Ensure this duration is longer than the animation's duration.
-  ///   - animation: The animation to use when presenting the popup. Default is a spring animation.
   ///   - attachmentAnchor: The positioning anchor that defines the
   ///     attachment point of the popup. The default is
   ///     ``PopupAttachmentAnchor/Source/bounds``.
@@ -72,7 +68,6 @@ extension View {
   public func popup<Popup: View, Item: Identifiable & Equatable>(
     item: Binding<Item?>,
     duration: Duration = .seconds(0.35),
-    animation: Animation = .spring(duration: 0.3, bounce: 0.25, blendDuration: 0.1),
     attachmentAnchor: PopupAttachmentAnchor = .rect(.bounds),
     attachmentEdge: Edge = .top,
     edgeOffset: CGFloat = 0,
@@ -84,7 +79,6 @@ extension View {
       PopupItemModifier(
         item: item,
         duration: duration,
-        animation: animation,
         dismissTapBehavior: dismissTapBehavior,
         attachmentAnchor: attachmentAnchor,
         attachmentEdge: attachmentEdge,

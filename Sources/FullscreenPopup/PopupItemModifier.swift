@@ -9,7 +9,6 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
 
   var presentationAnimationTrigger: Bool { isUserInstructToPresent != nil ? isViewAppeared : false }
 
-  let animation: Animation
   let duration: Duration
   let dismissTapBehavior: DismissTapBehavior
   let attachmentAnchor: PopupAttachmentAnchor
@@ -21,7 +20,6 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
   init(
     item: Binding<Item?>,
     duration: Duration,
-    animation: Animation,
     dismissTapBehavior: DismissTapBehavior,
     attachmentAnchor: PopupAttachmentAnchor,
     attachmentEdge: Edge,
@@ -33,7 +31,6 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
     self._isUserInstructToPresent = item
     self._item = item
     self.duration = duration
-    self.animation = animation
     self.dismissTapBehavior = dismissTapBehavior
     self.attachmentAnchor = attachmentAnchor
     self.attachmentEdge = attachmentEdge
@@ -67,7 +64,10 @@ struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModif
             )
           )
         }
-        .animation(animation, value: presentationAnimationTrigger)
+        .animation(
+          $isUserInstructToPresent.transaction.animation,
+          value: presentationAnimationTrigger
+        )
     } onAppear: {
       isViewAppeared = true
     } onDisappear: {
