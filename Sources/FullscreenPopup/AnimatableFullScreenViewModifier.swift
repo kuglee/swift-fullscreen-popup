@@ -154,13 +154,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
 private struct DismissTapView: UIViewRepresentable {
   let dismissTapBehavior: DismissTapBehavior
 
-  func makeUIView(context _: Context) -> UIView {
-    HelperView(dismissTapBehavior: dismissTapBehavior)
-  }
-
-  func updateUIView(_: UIView, context _: Context) {}
-
-  private class HelperView: UIView {
+  final class View: UIView {
     let dismissTapBehavior: DismissTapBehavior
 
     init(dismissTapBehavior: DismissTapBehavior) {
@@ -168,7 +162,9 @@ private struct DismissTapView: UIViewRepresentable {
       super.init(frame: .zero)
     }
 
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+    @available(*, unavailable) required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+    }
 
     override func didMoveToWindow() {
       super.didMoveToWindow()
@@ -180,6 +176,10 @@ private struct DismissTapView: UIViewRepresentable {
       }
     }
   }
+
+  func makeUIView(context: Context) -> View { .init(dismissTapBehavior: dismissTapBehavior) }
+
+  func updateUIView(_ uiView: View, context: Context) {}
 }
 
 public enum DismissTapBehavior {
