@@ -74,7 +74,7 @@ private struct AnimatableFullScreenItemViewModifier<
     content.onChange(of: isUserInstructToPresentItem) {
       UIView.setAnimationsEnabled(false)
 
-      if isUserInstructToPresentItem == nil, let animation {
+      if isUserInstructToPresentItem == nil {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
         } completion: {
@@ -101,6 +101,8 @@ private struct AnimatableFullScreenItemViewModifier<
         }
     }
     .background { dismissAnimationCompletionTriggerView }
+    // this is for when in a presentation isUserInstructToPresent is set to nil from the outside
+    .animation(animation, value: isUserInstructToPresentItem != nil)
   }
 
   var dismissAnimationCompletionTriggerView: some View {
@@ -141,7 +143,7 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
     content.onChange(of: isUserInstructToPresent) {
       UIView.setAnimationsEnabled(false)
 
-      if !isUserInstructToPresent, let animation {
+      if !isUserInstructToPresent {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
         } completion: {
@@ -168,6 +170,8 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
         }
     }
     .background { dismissAnimationCompletionTriggerView }
+    // this is for when in a presentation isUserInstructToPresent is set to false from the outside
+    .animation(animation, value: isUserInstructToPresent)
   }
 
   var dismissAnimationCompletionTriggerView: some View {

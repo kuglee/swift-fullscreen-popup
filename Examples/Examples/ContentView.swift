@@ -6,7 +6,7 @@ struct ContentView: View {
   @State var example2Item: MyItem?
 
   var body: some View {
-    VStack {
+    Color.clear.sheet(isPresented: .constant(true)) {
       Button {
         isExample1Presented = true
       } label: {
