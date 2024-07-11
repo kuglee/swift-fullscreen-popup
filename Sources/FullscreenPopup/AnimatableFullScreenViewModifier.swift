@@ -72,6 +72,8 @@ private struct AnimatableFullScreenItemViewModifier<
 
   func body(content: Content) -> some View {
     content.onChange(of: isUserInstructToPresentItem) {
+      UIView.setAnimationsEnabled(false)
+
       if isUserInstructToPresentItem == nil, let animation {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
@@ -85,10 +87,20 @@ private struct AnimatableFullScreenItemViewModifier<
     .fullScreenCover(item: $isActualPresented) { item in
       fullScreenContent(item).presentationBackground(.clear)
         .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
-        .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
+        .onAppear {
+          if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
+            withAnimation(animation) { onAppear() }
+          }
+        }
+        .onDisappear {
+          if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
+            onDisappear()
+          }
+        }
     }
     .background { dismissAnimationCompletionTriggerView }
-    .transaction { $0.disablesAnimations = true }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
@@ -127,6 +139,8 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
 
   func body(content: Content) -> some View {
     content.onChange(of: isUserInstructToPresent) {
+      UIView.setAnimationsEnabled(false)
+
       if !isUserInstructToPresent, let animation {
         withAnimation(animation) {
           dismissAnimationCompletionTrigger = .init()
@@ -140,10 +154,20 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
     .fullScreenCover(isPresented: $isActualPresented) {
       fullScreenContent().presentationBackground(.clear)
         .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
-        .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
+        .onAppear {
+          if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
+            withAnimation(animation) { onAppear() }
+          }
+        }
+        .onDisappear {
+          if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
+            onDisappear()
+          }
+        }
     }
     .background { dismissAnimationCompletionTriggerView }
-    .transaction { $0.disablesAnimations = true }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
