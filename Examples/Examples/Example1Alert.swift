@@ -6,7 +6,6 @@ public struct Example1Alert: View {
   public var body: some View {
     VStack {
       Text("An error has occurred!!").font(.title)
-
       HStack {
         Button {
           isPresented = false
@@ -16,6 +15,6 @@ public struct Example1Alert: View {
         }
       }
     }
-    .padding().background(.white).clipShape(RoundedRectangle(cornerRadius: 10))
+    .padding().background(.gray).clipShape(RoundedRectangle(cornerRadius: 10))
   }
 }
