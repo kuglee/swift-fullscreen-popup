@@ -83,13 +83,12 @@ private struct AnimatableFullScreenItemViewModifier<
       }
     }
     .fullScreenCover(item: $isActualPresented) { item in
-      fullScreenContent(item)
-      .presentationBackground(.clear)
+      fullScreenContent(item).presentationBackground(.clear)
         .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
         .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
-    .transaction { $0.disablesAnimations = isActualPresented != nil }
+    .transaction { $0.disablesAnimations = true }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
@@ -139,13 +138,12 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
       }
     }
     .fullScreenCover(isPresented: $isActualPresented) {
-      fullScreenContent()
-        .presentationBackground(.clear)
+      fullScreenContent().presentationBackground(.clear)
         .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
         .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
-    .transaction { $0.disablesAnimations = isActualPresented }
+    .transaction { $0.disablesAnimations = true }
   }
 
   var dismissAnimationCompletionTriggerView: some View {
