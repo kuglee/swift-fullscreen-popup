@@ -84,7 +84,8 @@ private struct AnimatableFullScreenItemViewModifier<
     }
     .fullScreenCover(item: $isActualPresented) { item in
       fullScreenContent(item)
-        .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
+      .presentationBackground(.clear)
+        .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
         .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
@@ -139,7 +140,8 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
     }
     .fullScreenCover(isPresented: $isActualPresented) {
       fullScreenContent()
-        .background(BackgroundTransparentView(dismissTapBehavior: dismissTapBehavior))
+        .presentationBackground(.clear)
+        .background(DismissTapView(dismissTapBehavior: dismissTapBehavior))
         .onAppear { withAnimation(animation) { onAppear() } }.onDisappear { onDisappear() }
     }
     .background { dismissAnimationCompletionTriggerView }
@@ -151,16 +153,16 @@ private struct AnimatableFullScreenViewModifier<FullScreenContent: View>: ViewMo
   }
 }
 
-private struct BackgroundTransparentView: UIViewRepresentable {
+private struct DismissTapView: UIViewRepresentable {
   let dismissTapBehavior: DismissTapBehavior
 
   func makeUIView(context _: Context) -> UIView {
-    TransparentView(dismissTapBehavior: dismissTapBehavior)
+    HelperView(dismissTapBehavior: dismissTapBehavior)
   }
 
   func updateUIView(_: UIView, context _: Context) {}
 
-  private class TransparentView: UIView {
+  private class HelperView: UIView {
     let dismissTapBehavior: DismissTapBehavior
 
     init(dismissTapBehavior: DismissTapBehavior) {
@@ -172,7 +174,6 @@ private struct BackgroundTransparentView: UIViewRepresentable {
 
     override func didMoveToWindow() {
       super.didMoveToWindow()
-      superview?.superview?.backgroundColor = .clear
 
       if dismissTapBehavior == .simultaneous {
         if let contentView = superview, let uiTransitionView = contentView.superview?.superview {
