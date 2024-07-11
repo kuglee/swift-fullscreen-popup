@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// An attachment anchor for a popup.
-public enum PopupAttachmentAnchor {
+public enum PopupAttachmentAnchor: Sendable {
   /// The anchor point for the popup relative to the source's frame.
   case rect(Source)
 
@@ -9,7 +9,7 @@ public enum PopupAttachmentAnchor {
   /// describes possible alignments relative to a SwiftUI view.
   case point(UnitPoint)
 
-  public enum Source {
+  public enum Source: Sendable {
     /// Returns a source rect defined by `r` in the current view.
     case rect(_ r: CGRect)
 
