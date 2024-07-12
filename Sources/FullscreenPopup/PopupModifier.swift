@@ -1,7 +1,7 @@
 import OnTapOutsideGesture
 import SwiftUI
 
-struct PopupModifier<Popup: View>: ViewModifier {
+@available(macOS, unavailable) struct PopupModifier<Popup: View>: ViewModifier {
   @Binding var isUserInstructToPresent: Bool
   @State var isViewAppeared: Bool = false
   @State var contentFrame: CGRect = .zero

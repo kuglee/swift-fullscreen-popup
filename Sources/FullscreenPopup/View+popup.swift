@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension View {
+@available(macOS, unavailable) extension View {
   /// - Note: The `duration` parameter must be greater than the `duration` of the `animation`.
   ///
   /// - Parameters:
@@ -42,7 +42,7 @@ extension View {
   }
 }
 
-extension View {
+@available(macOS, unavailable) extension View {
   /// - Note: The `duration` parameter must be greater than the `duration` of the `animation`.
   ///
   /// - Parameters:

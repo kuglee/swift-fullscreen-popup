@@ -1,6 +1,7 @@
 import OnTapOutsideGesture
 import SwiftUI
 
+@available(macOS, unavailable)
 struct PopupItemModifier<Popup: View, Item: Identifiable & Equatable>: ViewModifier {
   @Binding var isUserInstructToPresent: Item?
   @Binding var item: Item?
